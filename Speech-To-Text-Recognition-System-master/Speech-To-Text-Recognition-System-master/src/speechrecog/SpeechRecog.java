@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author int3ll3ct
+ * @author int3ll3ct, Fabusuyi012
  */
 public class SpeechRecog {
     /**
@@ -53,6 +53,10 @@ public class SpeechRecog {
             }
             //end of audio content recognition
             recog.stopRecognition();
+            /*Questions to be asked - How to check for certain text in user voice input, 
+            how to train the machine with certain words, how to accept user input,
+            how to show audio wave audibility strength on JAVA Swing GUI
+            */
         }catch(Exception ex){
             JOptionPane.showMessageDialog(null,"Error in main method: "+ex.getMessage());
         }
