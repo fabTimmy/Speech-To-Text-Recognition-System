@@ -5,20 +5,43 @@
  */
 package speechrecog;
 
+//import of API classes
+import edu.cmu.sphinx.api.Configuration;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
+import edu.cmu.sphinx.api.StreamSpeechRecognizer;
+import edu.cmu.sphinx.api.SpeechResult;
+import edu.cmu.sphinx.result.Lattice;
+import edu.cmu.sphinx.result.WordResult;
+//import of IO classes
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.FileWriter;
+import  java.io.PrintWriter;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+//import of swing components
 
 /**
  *
  * @author DEJI
  */
 public class MainActivity extends javax.swing.JFrame {
-
+    //declaration of paths to attributes
+    String a_path = "resource:/edu/cmu/sphinx/models/en-us/en-us";
+    String d_path = "resource:/edu/cmu/sphinx/models/en-us/cmudict-en-us.dict";
+    String l_path = "resource:/edu/cmu/sphinx/models/en-us/en-us.lm.bin";
+    //Declaration of other variables
+    Configuration config;
+    LiveSpeechRecognizer recog;
+    SpeechResult result;
     /**
      * Creates new form MainActivity
      */
     public MainActivity() {
         initComponents();
+        defaultActions();
     }
 
     /**
@@ -35,8 +58,10 @@ public class MainActivity extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
-        speak_btn = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        speakStart = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        resultField = new javax.swing.JTextField();
+        speakStop = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -45,6 +70,8 @@ public class MainActivity extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,42 +86,71 @@ public class MainActivity extends javax.swing.JFrame {
         jTabbedPane1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jTabbedPane1.setForeground(new java.awt.Color(102, 102, 255));
 
-        speak_btn.setBackground(new java.awt.Color(0, 204, 204));
-        speak_btn.setFont(new java.awt.Font("Sylfaen", 0, 24)); // NOI18N
-        speak_btn.setText("Speak");
-        speak_btn.setToolTipText("Click to Record Speech");
-        speak_btn.setBorder(null);
-        speak_btn.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+        speakStart.setBackground(new java.awt.Color(0, 204, 204));
+        speakStart.setFont(new java.awt.Font("Sylfaen", 0, 24)); // NOI18N
+        speakStart.setText("START SPEAKING");
+        speakStart.setToolTipText("Click to Record Speech");
+        speakStart.setBorder(null);
+        speakStart.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                speak_btnMouseMoved(evt);
+                speakStartMouseMoved(evt);
+            }
+        });
+        speakStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                speakStartActionPerformed(evt);
             }
         });
 
-        jTextField1.setBackground(new java.awt.Color(222, 243, 243));
-        jTextField1.setFont(new java.awt.Font("Ubuntu Light", 2, 24)); // NOI18N
-        jTextField1.setToolTipText("Spoken word shows here");
+        resultField.setBackground(new java.awt.Color(222, 243, 243));
+        resultField.setFont(new java.awt.Font("Ubuntu Light", 2, 24)); // NOI18N
+        resultField.setToolTipText("Spoken word shows here");
+        jScrollPane3.setViewportView(resultField);
+
+        speakStop.setBackground(new java.awt.Color(0, 204, 204));
+        speakStop.setFont(new java.awt.Font("Sylfaen", 0, 24)); // NOI18N
+        speakStop.setText("STOP SPEAKING");
+        speakStop.setToolTipText("Click to Record Speech");
+        speakStop.setBorder(null);
+        speakStop.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                speakStopMouseMoved(evt);
+            }
+        });
+        speakStop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                speakStopActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(speakStop, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(289, 289, 289))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(128, 128, 128)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(speak_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(179, 179, 179))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(137, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(123, 123, 123)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(283, 283, 283)
+                        .addComponent(speakStart, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(198, Short.MAX_VALUE)
-                .addComponent(speak_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(79, 79, 79))
+                .addContainerGap(228, Short.MAX_VALUE)
+                .addComponent(speakStart, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
+                .addComponent(speakStop, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Speak", jPanel2);
@@ -145,7 +201,7 @@ public class MainActivity extends javax.swing.JFrame {
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -175,6 +231,10 @@ public class MainActivity extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Train", jPanel3);
+
+        jScrollPane2.setViewportView(jTextPane1);
+
+        jTabbedPane1.addTab("tab3", jScrollPane2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -222,14 +282,62 @@ public class MainActivity extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    private void defaultActions(){
+        try{
+            config = new Configuration();
+            //setting paths to attributes
+            config.setAcousticModelPath(a_path);
+            config.setDictionaryPath(d_path);
+            config.setLanguageModelPath(l_path);
+            //adding attribute so a SpeechRecognizer
+            recog = new LiveSpeechRecognizer(config);
+            
+            
+            /*Questions to be asked - How to check for certain text in user voice input, 
+            how to train the machine with certain words, how to accept user input,
+            how to show audio wave audibility strength on JAVA Swing GUI
+            */
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null,"Error in main method: "+ex.getMessage());
+        }
+    }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void speak_btnMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_speak_btnMouseMoved
-        speak_btn.setBackground(new java.awt.Color(0,205,207));
-    }//GEN-LAST:event_speak_btnMouseMoved
+    private void speakStartMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_speakStartMouseMoved
+        speakStart.setBackground(new java.awt.Color(0,205,207));
+    }//GEN-LAST:event_speakStartMouseMoved
+
+    private void speakStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_speakStartActionPerformed
+        // TODO add your handling code here:
+        //start of audio content recogniton
+        recog.startRecognition(true);
+        
+        //printing user utterances without filtering
+        
+        result = recog.getResult(); //result obtained from recognized contents of the audio
+        resultField.setText("Hypothesis: "+result.getHypothesis());
+        //decoding telephone audio quality with sample rate 8000Hz
+        config.setSampleRate(8000);
+
+        result.getWords().stream().forEach((w_result) -> {
+            System.out.println(w_result);
+        });
+        //Lattice lattice = null;
+        result.getLattice().dumpDot("lattice.dot", "lattice");
+    }//GEN-LAST:event_speakStartActionPerformed
+
+    private void speakStopMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_speakStopMouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_speakStopMouseMoved
+
+    private void speakStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_speakStopActionPerformed
+        // TODO add your handling code here:
+        //end of audio content recognition
+        recog.stopRecognition();
+    }//GEN-LAST:event_speakStopActionPerformed
 
     /**
      * @param args the command line arguments
@@ -261,10 +369,14 @@ public class MainActivity extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JButton speak_btn;
+    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTextField resultField;
+    private javax.swing.JButton speakStart;
+    private javax.swing.JButton speakStop;
     // End of variables declaration//GEN-END:variables
 }

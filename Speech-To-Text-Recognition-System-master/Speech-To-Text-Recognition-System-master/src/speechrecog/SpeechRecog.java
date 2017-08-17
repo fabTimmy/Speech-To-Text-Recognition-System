@@ -6,8 +6,11 @@
 package speechrecog;
 //import of API classes
 import edu.cmu.sphinx.api.Configuration;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.StreamSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
+import edu.cmu.sphinx.result.Lattice;
+import edu.cmu.sphinx.result.WordResult;
 //import of IO classes
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,25 +35,37 @@ public class SpeechRecog {
         // TODO code application logic here
         try{
             Configuration config  = new Configuration();
+            //declaration of paths to attributes
             String a_path = "resource:/edu/cmu/sphinx/models/en-us/en-us";
             String d_path = "resource:/edu/cmu/sphinx/models/en-us/cmudict-en-us.dict";
             String l_path = "resource:/edu/cmu/sphinx/models/en-us/en-us.lm.bin";
+            //setting paths to attributes
             config.setAcousticModelPath(a_path);
             config.setDictionaryPath(d_path);
             config.setLanguageModelPath(l_path);
-            
-            StreamSpeechRecognizer recog = new StreamSpeechRecognizer(config);
-            //creating the .wav audio file using IO FileWriting
-            String audio = "audio.wav";
-            PrintWriter output = new PrintWriter(new FileWriter(audio));
+            //adding attribute so a SpeechRecognizer
+            //StreamSpeechRecognizer recog = new StreamSpeechRecognizer(config);
+            LiveSpeechRecognizer recog = new LiveSpeechRecognizer(config);
+            //creating the .wav audio file using IO FileWriting to make sure it exists in the project folder
+            //String audio = "audio.wav";
+            //PrintWriter output = new PrintWriter(new FileWriter(audio));
             //transcribing the audio.wav file
-            InputStream stream = new FileInputStream(new File(audio));
+            //InputStream stream = new FileInputStream(new File(audio));
             //start of audio content recogniton
-            recog.startRecognition(stream);
-            SpeechResult result=null; //result obtained from recognized contents of the audio
-            while(recog.getResult()!=null){
-                JOptionPane.showMessageDialog(null, "Hypothesis: "+result.getHypothesis());
+            //recog.startRecognition(stream);
+            recog.startRecognition(true);
+            SpeechResult result = recog.getResult(); //result obtained from recognized contents of the audio
+            //decoding telephone audio quality with sample rate 8000Hz
+            config.setSampleRate(8000);
+            //while((result=recog.getResult())!=null){
+                //printing user utterances without filtering
+                System.out.println("Hypothesis: "+result.getHypothesis());
+            //}
+            for(WordResult w_result: result.getWords()){
+                System.out.println(w_result);
             }
+            //Lattice lattice = null;
+            result.getLattice().dumpDot("lattice.dot", "lattice");
             //end of audio content recognition
             recog.stopRecognition();
             /*Questions to be asked - How to check for certain text in user voice input, 

@@ -1,0 +1,6 @@
+digraph "lattice" {
+rankdir = LR
+	node7270938 [ label="<s>[0,0 p:0.0]" ]
+	node9347947 [ label="</s>[0,-1 p:0.0]" ]
+	node7270938 -> node9347947 [ label="0.0,-816040.6875" ]
+}
