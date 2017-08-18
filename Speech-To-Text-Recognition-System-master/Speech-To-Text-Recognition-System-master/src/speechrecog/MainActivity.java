@@ -8,6 +8,7 @@ package speechrecog;
 //import of API classes
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
+import edu.cmu.sphinx.api.SpeechAligner;
 import edu.cmu.sphinx.api.StreamSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
 import edu.cmu.sphinx.result.Lattice;
@@ -36,6 +37,7 @@ public class MainActivity extends javax.swing.JFrame {
     Configuration config;
     LiveSpeechRecognizer recog;
     SpeechResult result;
+    SpeechAligner align;
     /**
      * Creates new form MainActivity
      */
@@ -62,6 +64,9 @@ public class MainActivity extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         resultField = new javax.swing.JTextField();
         speakStop = new javax.swing.JButton();
+        speakStart1 = new javax.swing.JButton();
+        speakStart2 = new javax.swing.JButton();
+        restartSpeech = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -123,34 +128,95 @@ public class MainActivity extends javax.swing.JFrame {
             }
         });
 
+        speakStart1.setBackground(new java.awt.Color(0, 204, 204));
+        speakStart1.setFont(new java.awt.Font("Sylfaen", 0, 24)); // NOI18N
+        speakStart1.setText("DISCARD");
+        speakStart1.setToolTipText("Click to Record Speech");
+        speakStart1.setBorder(null);
+        speakStart1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                speakStart1MouseMoved(evt);
+            }
+        });
+        speakStart1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                speakStart1ActionPerformed(evt);
+            }
+        });
+
+        speakStart2.setBackground(new java.awt.Color(0, 204, 204));
+        speakStart2.setFont(new java.awt.Font("Sylfaen", 0, 24)); // NOI18N
+        speakStart2.setText("SAVE");
+        speakStart2.setToolTipText("Click to Record Speech");
+        speakStart2.setBorder(null);
+        speakStart2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                speakStart2MouseMoved(evt);
+            }
+        });
+        speakStart2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                speakStart2ActionPerformed(evt);
+            }
+        });
+
+        restartSpeech.setBackground(new java.awt.Color(0, 204, 204));
+        restartSpeech.setFont(new java.awt.Font("Sylfaen", 0, 24)); // NOI18N
+        restartSpeech.setText("RESTART");
+        restartSpeech.setToolTipText("Click to Record Speech");
+        restartSpeech.setBorder(null);
+        restartSpeech.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                restartSpeechMouseMoved(evt);
+            }
+        });
+        restartSpeech.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restartSpeechActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(speakStop, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(289, 289, 289))
-            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(123, 123, 123)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(283, 283, 283)
-                        .addComponent(speakStart, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(141, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(speakStart, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(265, 265, 265))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(speakStop, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(267, 267, 267))))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(132, 132, 132)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(speakStart2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addComponent(speakStart1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31)
+                        .addComponent(restartSpeech, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23)))
+                .addContainerGap(132, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(228, Short.MAX_VALUE)
+                .addGap(42, 42, 42)
                 .addComponent(speakStart, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(speakStop, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(restartSpeech, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(speakStart1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(speakStart2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(75, 75, 75))
         );
 
         jTabbedPane1.addTab("Speak", jPanel2);
@@ -201,7 +267,7 @@ public class MainActivity extends javax.swing.JFrame {
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -314,11 +380,10 @@ public class MainActivity extends javax.swing.JFrame {
         // TODO add your handling code here:
         //start of audio content recogniton
         recog.startRecognition(true);
-        
-        //printing user utterances without filtering
-        
         result = recog.getResult(); //result obtained from recognized contents of the audio
+        while((result=recog.getResult())!=null){
         resultField.setText("Hypothesis: "+result.getHypothesis());
+        }
         //decoding telephone audio quality with sample rate 8000Hz
         config.setSampleRate(8000);
 
@@ -327,6 +392,7 @@ public class MainActivity extends javax.swing.JFrame {
         });
         //Lattice lattice = null;
         result.getLattice().dumpDot("lattice.dot", "lattice");
+        speakStart.setEnabled(false);
     }//GEN-LAST:event_speakStartActionPerformed
 
     private void speakStopMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_speakStopMouseMoved
@@ -337,7 +403,32 @@ public class MainActivity extends javax.swing.JFrame {
         // TODO add your handling code here:
         //end of audio content recognition
         recog.stopRecognition();
+        speakStop.setEnabled(false);
     }//GEN-LAST:event_speakStopActionPerformed
+
+    private void speakStart1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_speakStart1MouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_speakStart1MouseMoved
+
+    private void speakStart1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_speakStart1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_speakStart1ActionPerformed
+
+    private void speakStart2MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_speakStart2MouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_speakStart2MouseMoved
+
+    private void speakStart2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_speakStart2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_speakStart2ActionPerformed
+
+    private void restartSpeechMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_restartSpeechMouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_restartSpeechMouseMoved
+
+    private void restartSpeechActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartSpeechActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_restartSpeechActionPerformed
 
     /**
      * @param args the command line arguments
@@ -375,8 +466,11 @@ public class MainActivity extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JButton restartSpeech;
     private javax.swing.JTextField resultField;
     private javax.swing.JButton speakStart;
+    private javax.swing.JButton speakStart1;
+    private javax.swing.JButton speakStart2;
     private javax.swing.JButton speakStop;
     // End of variables declaration//GEN-END:variables
 }
